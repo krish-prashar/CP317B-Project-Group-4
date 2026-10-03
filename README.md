@@ -1,10 +1,8 @@
 # HealthTrack
-CP317B Group 4 health monitoring project.
+CP317B Group 4.
 
-Milestone 1:
-- Review [the submission draft](docs/milestone-01-submission.md).
-- Add team names, roles, Product Owner, and confirm the group ID.
-- Fill in the course Excel blog template in submission/Group4-Blog.xlsx.
-- Submit the PDF and Excel file to MyLS.
+- Fill in [Milestone 1](docs/milestone-01-template.md). Yellow prompts = your writing.
+- Complete the Excel template in `templates/` using actual team details and activities.
+- Submit `Group4-Milestone01.pdf` and `Group4-Blog.xlsx` to MyLS.
 
-No application code is required for Milestone 1.
+No app code is required for Milestone 1. Confirm the official group ID before naming files.
