@@ -2,7 +2,12 @@
 ## Cover page
 Project title: HealthTrack - Health Monitoring and Shared Trends
 Group ID: Group 4 [confirm official ID]
-Team members and roles: [add full names and agreed roles]
+Team members and roles:
+Colby Lumsden - [role]
+David [surname needed] - [role]
+Laharl Wang - [role]
+Arvin Gill - [role]
+Krish Prashar - [role]
 Product Owner: [add name]
 Submission date: October 2, 2026
 
