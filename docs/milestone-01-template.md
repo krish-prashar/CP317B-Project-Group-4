@@ -15,10 +15,7 @@
 ## 2. Abstract (1–2 paragraphs)
 🟨 [Write: problem → intended users → what you will build → benefit.]
 
-## 3. Description and objectives
-> [!TIP]
-> **🟩 Colby's description draft — rewrite/edit before submitting. Remove this callout label afterward.**
->
+## 3. Description and objectives (Colby)
 > HealthTrack will let patients record health measurements and review their history in one place. Users will enter measurements manually or import a CSV file, then view summaries and charts for metrics such as heart rate, sleep duration, and steps. Patients will control whether a health professional can view their records and will be able to revoke access.
 >
 > The core project will include accounts, measurement entry, CSV imports, historical charts, and permission-based sharing. We propose TypeScript with Next.js for the web application and PostgreSQL for storing records. The team will follow Scrum and use GitHub to manage code and documentation.
