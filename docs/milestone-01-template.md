@@ -6,14 +6,24 @@
 - Title: 🟨 [Choose your project title]
 - Group: 🟨 [Confirm Group 4]
 - Members: Colby Lumsden, David 🟨 [surname], Laharl Wang, Arvin Gill, Krish Prashar
-- Roles: 🟨 [Each member's role; identify Product Owner]
+- Colby Lumsden — Lead Developer: description, technical approach, scope.
+- Krish Prashar — Scrum Master / Coordinator: blog, assembly, submission checks.
+- David — Product Owner: objectives and feature priorities.
+- Laharl Wang — Requirements Analyst: user stories.
+- Arvin Gill — QA / Documentation: ethics and proofreading.
 
 ## 2. Abstract (1–2 paragraphs)
 🟨 [Write: problem → intended users → what you will build → benefit.]
 
 ## 3. Description and objectives
-🟨 [Describe patient and professional features. Define core scope; wearable sync can be an extension.]
-🟨 [Briefly state proposed language/tools and Scrum approach. Any language is allowed.]
+> [!TIP]
+> **🟩 Colby's description draft — rewrite/edit before submitting. Remove this callout label afterward.**
+>
+> HealthTrack will let patients record health measurements and review their history in one place. Users will enter measurements manually or import a CSV file, then view summaries and charts for metrics such as heart rate, sleep duration, and steps. Patients will control whether a health professional can view their records and will be able to revoke access.
+>
+> The core project will include accounts, measurement entry, CSV imports, historical charts, and permission-based sharing. We propose TypeScript with Next.js for the web application and PostgreSQL for storing records. The team will follow Scrum and use GitHub to manage code and documentation.
+>
+> WHOOP integration and Apple Health syncing are possible extensions after the core features work. The initial version will focus on recorded history rather than continuous live monitoring, and will not provide diagnoses or emergency alerts.
 
 Write 3–6 concrete objectives:
 1. 🟨 [Allow a user to…]
@@ -49,7 +59,7 @@ At least 3 issues. Write **issue + how your design addresses it**:
 - Confirm you will update the blog throughout the semester.
 
 ## Before submitting
-- Remove all 🟨 prompts; review as a team.
+- Replace all 🟨 prompts and rewrite/review the 🟩 draft; remove instructional labels before submitting.
 - Export your completed document as **Group4-Milestone01.pdf**.
 - Save completed blog as **Group4-Blog.xlsx**.
 - Confirm official group ID; adjust filenames if needed.
