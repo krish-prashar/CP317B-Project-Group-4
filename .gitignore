@@ -13,3 +13,4 @@ dist/
 # Local OS/editor files
 .DS_Store
 Thumbs.db
+tmp/
