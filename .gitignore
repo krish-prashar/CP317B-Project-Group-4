@@ -1,0 +1,15 @@
+# Secrets and private health data
+.env
+.env.*
+!.env.example
+private-data/
+health-exports/
+export.xml
+apple_health_export/
+# Future app dependencies/build output
+node_modules/
+.next/
+dist/
+# Local OS/editor files
+.DS_Store
+Thumbs.db
