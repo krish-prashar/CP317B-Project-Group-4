@@ -43,11 +43,11 @@ Use feature prefixes, e.g. AUTH, MET, UI, REP, SHARE.
 | 🟨 [PREFIX-5] | 🟨 [Title] | 🟨 [Your story] |
 | 🟨 [PREFIX-6] | 🟨 [Title] | 🟨 [Your story] |
 
-## 5. Ethics (maximum 1 page)
-At least 3 issues. Write **issue + how your design addresses it**:
--  HealthTrack will store sensitive personal health information. The design addresses this by allowing users to control who can view their records and revoke access at any time.
--  Health information could be exposed if accounts are not properly protected. The design addresses this by using secure login, protected passwords, and restricting records to authorized users.
--  Incorrect health data could mislead users. The design addresses this by validating entered or imported data where possible and clearly showing measurement values, units, and dates.
+## 5. Ethics (maximum 1 page) (Arvin)
+-  HealthTrack will contain personal health information, so users should have control over who can access it. Users will be able to choose who can view their records and remove that access whenever they want.
+-  Since health information is sensitive, unauthorized access is a concern. HealthTrack will use secure user accounts, protected passwords, and access controls so that only approved users can view health records.
+-  Incorrect measurements or imported data could give users a false understanding of their health history. HealthTrack will check entered and imported data where possible and clearly display important information such as values, dates, and measurement units.
+-  Some users may have difficulty using complicated layouts or reading certain information. HealthTrack will use clear labels, simple navigation, readable text, and easy-to-understand charts so the system is easier for a wider range of users to use.
 
 ## 6. Separate Excel blog
 - Replace template example names with your team in H6:J11.
