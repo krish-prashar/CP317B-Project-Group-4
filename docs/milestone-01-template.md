@@ -3,9 +3,9 @@
 
 ## 1. Cover
 - Course: CP317B
-- Title: 🟨 [Choose your project title]
-- Group: 🟨 [Confirm Group 4]
-- Members: Colby Lumsden, David 🟨 [surname], Laharl Wang, Arvin Gill, Krish Prashar
+- Title: HealthTrack - Health Monitoring and Shared Trends
+- Group: Group 4
+- Members: Colby Lumsden, David [surname unknown], Laharl Wang, Arvin Gill, Krish Prashar
 - Colby Lumsden — Lead Developer: description, technical approach, scope.
 - Krish Prashar — Scrum Master / Coordinator: blog, assembly, submission checks.
 - David — Product Owner: objectives and feature priorities.
