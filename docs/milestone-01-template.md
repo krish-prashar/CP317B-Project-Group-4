@@ -22,13 +22,13 @@
 >
 > WHOOP integration and Apple Health syncing are possible extensions after the core features work. The initial version will focus on recorded history rather than continuous live monitoring, and will not provide diagnoses or emergency alerts.
 
-Write 3–6 concrete objectives:
-1. 🟨 [Allow a user to…]
-2. 🟨 [Allow a user to…]
-3. 🟨 [Allow a user to…]
-4. 🟨 [Optional]
-5. 🟨 [Optional]
-6. 🟨 [Optional]
+
+1. -Allow a user to create a secure account and log in to access their personal dash board and log out
+2. -Allow a user to manually enter and save health measurement (e.g. heart rate, sleep, steps) with a date and time
+3. -Allow a user to upload a csv file to bulk-import their tealth data from other sources.
+4. -Allow a user to view their historical data through interactive charts and summary statistics.
+5. -Allow a user to view their historical data through interactive charts and summary statistics.
+6. -Allow a user to grant and revoke access to their health records for a specific healthcare professional.
 
 ## 4. Initial backlog (6–10 stories)
 Write each story: **As a [user], I want [goal] so that [reason].**
@@ -36,12 +36,16 @@ Use feature prefixes, e.g. AUTH, MET, UI, REP, SHARE.
 
 | Story ID | Story Title | User Story |
 | --- | --- | --- |
-| 🟨 [PREFIX-1] | 🟨 [Title] | 🟨 [Your story] |
-| 🟨 [PREFIX-2] | 🟨 [Title] | 🟨 [Your story] |
-| 🟨 [PREFIX-3] | 🟨 [Title] | 🟨 [Your story] |
-| 🟨 [PREFIX-4] | 🟨 [Title] | 🟨 [Your story] |
-| 🟨 [PREFIX-5] | 🟨 [Title] | 🟨 [Your story] |
-| 🟨 [PREFIX-6] | 🟨 [Title] | 🟨 [Your story] |
+| AUTH-1 | User registration |  As a new user, I want to creat an account with a secure password so tha I can access the applicatrion's features.|
+| AUTH-2 | User login | As a registered user, I want to log in to my account so that I can view and manage my personal health data.|
+| AUTH-3| User logout | As a logged-in user, I want to log out of my account so that I can protect my health data on a shared device. |
+| MET-1 | Manual Measurement Entry | As a patient, I want to manually add a new health measurement(type, value, date, time) so that I can keep my health log up to date.|
+| MET-2 | View Measurement History| As a patient, I want to see a list of my past measurements so that I can review my recorded data in detail |
+|REP-1| Impot Data via CSV| As a patient, I want to import a CSV file containing my health data so that I can avoid manual entry for large datasets |
+|REP-2| View Historical Charts | As a patient, I want to view charts of my health metrics over time so that I can easily identify trends and patterns.|
+| SHARE-1 | Share Records with Professional | As a patient, I want to grant a healthcare professional access to my health records so that they can review my data before an appointment. |
+| SHARE-2 | Revoke Professional's Access | As a patient, I want to revoke a healthcare professional's access to my data at any time so that I remaian in control of my privacy. |
+| UI-1 | Dashboard Overview | As a patient, I want a simple dashboard that summarizes my key health metrics so that I can get  a quick overview of my status. |
 
 ## 5. Ethics (Arvin)
 -  HealthTrack will contain personal health information, so users should have control over who can access it. Users will be able to choose who can view their records and remove that access whenever they want.
