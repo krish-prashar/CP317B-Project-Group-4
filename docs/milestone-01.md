@@ -14,7 +14,9 @@
 ## 2. Abstract
 **Owner: Krish Prashar**
 
-🟨 [Write 1-2 paragraphs: the problem, intended users, what the system will do, and why it is useful.]
+A lot of people track their health in scattered places, such as notes apps, spreadsheets, or exports from separate devices, which makes it more difficult to see how their measurements change over time. Sharing that information with a health professional is just as difficult. Patients often usually rely on memory or screenshots during appointments, and professionals rarely see a complete, organized history. HealthTrack is a monitoring system intended for two groups of users. patients who want a private, central place to manage their own health data, and health professionals who need a clear view of the history that patients choose to share with them.
+
+HealthTrack will let patients create secure accounts, record health measurements manually, and import existing data from supported CSV files. The system will present a daily summary of recent readings and charts of historical trends by date range, so patients can understand how their metrics change over time. Patients stay in control of their records by granting or revoking a health professional's access at any time, and authorized professionals can then review the shared patient history. By combining simple data entry, clear trend visualization, and patient controlled sharing, HealthTrack makes health data easier to understand, more useful in conversations with professionals, and more private by design.
 
 ## 3. Project description
 **Owner: Colby Lumsden**
