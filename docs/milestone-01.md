@@ -48,8 +48,11 @@ HealthTrack will let patients create secure accounts, record health measurements
 **Owner: Arvin Gill**
 
 HealthTrack will contain personal health information, so users should have control over who can access it. Users will be able to choose who can view their records and remove that access whenever they want.
+
 Since health information is sensitive, unauthorized access is a concern. HealthTrack will use secure user accounts, protected passwords, and access controls so that only approved users can view health records.
+
 Incorrect measurements or imported data could give users a false understanding of their health history. HealthTrack will check entered and imported data where possible and clearly display important information such as values, dates, and measurement units.
+
 Some users may have difficulty using complicated layouts or reading certain information. HealthTrack will use clear labels, simple navigation, readable text, and easy-to-understand charts so the system is easier for a wider range of users to use.
 
 ## 7. Team blog
