@@ -82,4 +82,4 @@ Some users may have difficulty using complicated layouts or reading certain info
 
 Incorrect measurements or imported data could give users a false understanding of their health history. HealthTrack will check entered and imported data where possible and clearly display values, dates, and measurement units. The system will also avoid giving diagnoses or medical advice based on the information stored.
 
-## 5. Initial Design Sketches
+
