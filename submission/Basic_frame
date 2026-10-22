@@ -1,0 +1,132 @@
+import sqlite3
+import tkinter as tk
+from tkinter import ttk, messagebox
+from datetime import date
+
+DB_PATH = "health.db"
+
+
+class HealthApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("健康記錄")
+        self.root.geometry("720x480")
+
+        self.init_db()
+        self.build_form()
+        self.build_table()
+        self.load_records()
+
+    # ---------- 資料庫 ----------
+    def init_db(self):
+        self.conn = sqlite3.connect(DB_PATH)
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS health_records (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                record_date TEXT NOT NULL,
+                weight REAL,
+                systolic INTEGER,
+                diastolic INTEGER,
+                note TEXT
+            )
+        """)
+        self.conn.commit()
+
+    def insert_record(self, data):
+        self.conn.execute("""
+            INSERT INTO health_records (record_date, weight, systolic, diastolic, note)
+            VALUES (?, ?, ?, ?, ?)
+        """, data)
+        self.conn.commit()
+
+    def fetch_records(self):
+        cur = self.conn.execute("""
+            SELECT id, record_date, weight, systolic, diastolic, note
+            FROM health_records
+            ORDER BY record_date DESC, id DESC
+        """)
+        return cur.fetchall()
+
+    # ---------- 介面：表單 ----------
+    def build_form(self):
+        frame = ttk.LabelFrame(self.root, text="新增記錄", padding=10)
+        frame.pack(fill="x", padx=10, pady=10)
+
+        self.var_date = tk.StringVar(value=date.today().isoformat())
+        self.var_weight = tk.StringVar()
+        self.var_sys = tk.StringVar()
+        self.var_dia = tk.StringVar()
+        self.var_note = tk.StringVar()
+
+        fields = [
+            ("日期 (YYYY-MM-DD)", self.var_date),
+            ("體重 (kg)", self.var_weight),
+            ("收縮壓", self.var_sys),
+            ("舒張壓", self.var_dia),
+            ("備註", self.var_note),
+        ]
+
+        for i, (label, var) in enumerate(fields):
+            ttk.Label(frame, text=label).grid(row=0, column=i, padx=4)
+            ttk.Entry(frame, textvariable=var, width=14).grid(row=1, column=i, padx=4)
+
+        ttk.Button(frame, text="儲存", command=self.on_save).grid(row=1, column=len(fields), padx=8)
+
+    def on_save(self):
+        d = self.var_date.get().strip()
+        try:
+            weight = float(self.var_weight.get()) if self.var_weight.get().strip() else None
+            sys = int(self.var_sys.get()) if self.var_sys.get().strip() else None
+            dia = int(self.var_dia.get()) if self.var_dia.get().strip() else None
+        except ValueError:
+            messagebox.showerror("輸入錯誤", "體重請輸入數字，血壓請輸入整數。")
+            return
+
+        if not d:
+            messagebox.showerror("輸入錯誤", "日期不能為空。")
+            return
+
+        self.insert_record((d, weight, sys, dia, self.var_note.get().strip()))
+        self.var_weight.set("")
+        self.var_sys.set("")
+        self.var_dia.set("")
+        self.var_note.set("")
+        self.load_records()
+
+    # ---------- 介面：列表 ----------
+    def build_table(self):
+        frame = ttk.LabelFrame(self.root, text="歷史記錄", padding=10)
+        frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
+        columns = ("id", "date", "weight", "systolic", "diastolic", "note")
+        self.tree = ttk.Treeview(frame, columns=columns, show="headings")
+        headings = {
+            "id": "ID", "date": "日期", "weight": "體重",
+            "systolic": "收縮壓", "diastolic": "舒張壓", "note": "備註",
+        }
+        widths = {"id": 50, "date": 110, "weight": 80, "systolic": 80, "diastolic": 80, "note": 200}
+        for col in columns:
+            self.tree.heading(col, text=headings[col])
+            self.tree.column(col, width=widths[col], anchor="center")
+
+        scroll = ttk.Scrollbar(frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scroll.set)
+        self.tree.pack(side="left", fill="both", expand=True)
+        scroll.pack(side="right", fill="y")
+
+    def load_records(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for rec in self.fetch_records():
+            self.tree.insert("", "end", values=rec)
+
+    def on_close(self):
+        self.conn.close()
+        self.root.destroy()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = HealthApp(root)
+    root.protocol("WM_DELETE_WINDOW", app.on_close)
+    root.mainloop()
