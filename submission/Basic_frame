@@ -9,7 +9,7 @@ DB_PATH = "health.db"
 class HealthApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("健康記錄")
+        self.root.title("Health Tracker")
         self.root.geometry("720x480")
 
         self.init_db()
@@ -17,7 +17,7 @@ class HealthApp:
         self.build_table()
         self.load_records()
 
-    # ---------- 資料庫 ----------
+    # ---------- Database ----------
     def init_db(self):
         self.conn = sqlite3.connect(DB_PATH)
         self.conn.execute("""
@@ -47,9 +47,9 @@ class HealthApp:
         """)
         return cur.fetchall()
 
-    # ---------- 介面：表單 ----------
+    # ---------- UI: Form ----------
     def build_form(self):
-        frame = ttk.LabelFrame(self.root, text="新增記錄", padding=10)
+        frame = ttk.LabelFrame(self.root, text="Add Record", padding=10)
         frame.pack(fill="x", padx=10, pady=10)
 
         self.var_date = tk.StringVar(value=date.today().isoformat())
@@ -59,18 +59,18 @@ class HealthApp:
         self.var_note = tk.StringVar()
 
         fields = [
-            ("日期 (YYYY-MM-DD)", self.var_date),
-            ("體重 (kg)", self.var_weight),
-            ("收縮壓", self.var_sys),
-            ("舒張壓", self.var_dia),
-            ("備註", self.var_note),
+            ("Date (YYYY-MM-DD)", self.var_date),
+            ("Weight (kg)", self.var_weight),
+            ("Systolic", self.var_sys),
+            ("Diastolic", self.var_dia),
+            ("Note", self.var_note),
         ]
 
         for i, (label, var) in enumerate(fields):
             ttk.Label(frame, text=label).grid(row=0, column=i, padx=4)
             ttk.Entry(frame, textvariable=var, width=14).grid(row=1, column=i, padx=4)
 
-        ttk.Button(frame, text="儲存", command=self.on_save).grid(row=1, column=len(fields), padx=8)
+        ttk.Button(frame, text="Save", command=self.on_save).grid(row=1, column=len(fields), padx=8)
 
     def on_save(self):
         d = self.var_date.get().strip()
@@ -79,11 +79,11 @@ class HealthApp:
             sys = int(self.var_sys.get()) if self.var_sys.get().strip() else None
             dia = int(self.var_dia.get()) if self.var_dia.get().strip() else None
         except ValueError:
-            messagebox.showerror("輸入錯誤", "體重請輸入數字，血壓請輸入整數。")
+            messagebox.showerror("Input Error", "Weight must be a number; blood pressure must be integers.")
             return
 
         if not d:
-            messagebox.showerror("輸入錯誤", "日期不能為空。")
+            messagebox.showerror("Input Error", "Date cannot be empty.")
             return
 
         self.insert_record((d, weight, sys, dia, self.var_note.get().strip()))
@@ -93,16 +93,16 @@ class HealthApp:
         self.var_note.set("")
         self.load_records()
 
-    # ---------- 介面：列表 ----------
+    # ---------- UI: Table ----------
     def build_table(self):
-        frame = ttk.LabelFrame(self.root, text="歷史記錄", padding=10)
+        frame = ttk.LabelFrame(self.root, text="History", padding=10)
         frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
 
         columns = ("id", "date", "weight", "systolic", "diastolic", "note")
         self.tree = ttk.Treeview(frame, columns=columns, show="headings")
         headings = {
-            "id": "ID", "date": "日期", "weight": "體重",
-            "systolic": "收縮壓", "diastolic": "舒張壓", "note": "備註",
+            "id": "ID", "date": "Date", "weight": "Weight",
+            "systolic": "Systolic", "diastolic": "Diastolic", "note": "Note",
         }
         widths = {"id": 50, "date": 110, "weight": 80, "systolic": 80, "diastolic": 80, "note": 200}
         for col in columns:
