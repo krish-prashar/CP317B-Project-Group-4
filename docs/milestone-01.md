@@ -19,8 +19,8 @@ A lot of people track their health in scattered places, such as notes apps, spre
 HealthTrack will let patients create secure accounts, record health measurements manually, and import existing data from supported CSV files. The system will present a daily summary of recent readings and charts of historical trends by date range, so patients can understand how their metrics change over time. Patients stay in control of their records by granting or revoking a health professional's access at any time, and authorized professionals can then review the shared patient history. By combining simple data entry, clear trend visualization, and patient controlled sharing, HealthTrack makes health data easier to understand, more useful in conversations with professionals, and more private by design.
 
 ## 3. Project description
-**Owner: Colby Lumsden**
-
+**Owner: Laharl Wang**
+HealthTrack is a web-based health monitoring and data visualization system designed for people who want to track their health. Whether users are monitoring their weight, BMI, body fat rate, or heart rate from a smart scale or fitness tracker, HealthTrack provides a private, centralized place to manage, understand, and share their personal health data.
 
 
 ## 4. Project objectives
