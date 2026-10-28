@@ -21,7 +21,7 @@ HealthTrack will let patients create secure accounts, record health measurements
 ## 3. Project description
 **Owner: Colby Lumsden**
 
-🟨 [Describe the patient and health-professional features, core scope, technology plan, and Scrum approach.]
+
 
 ## 4. Project objectives
 **Owner: Colby Lumsden**
@@ -34,15 +34,15 @@ HealthTrack will let patients create secure accounts, record health measurements
 6. Allow authorized health professionals to review shared patient history.
 
 ## 5. Initial product backlog
-**Owner: Colby Lumsden**
+**Owner: Laharl Wang**
 | Story ID | Story Title | User Story |
 | --- | --- | --- |
-| AUTH-1 | Account Access | As a patient, I want to securely access my account so that my health records remain private. |
-| MET-1 | Record Measurements | As a patient, I want to record health measurements so that I can track my health history. |
-| IMP-1 | Import Measurements | As a patient, I want to import a CSV file so that I can add existing measurements quickly. |
-| UI-1 | Daily Summary | As a patient, I want to see a daily summary so that I can review recent health data. |
-| REP-1 | Historical Trends | As a patient, I want to view charts by date range so that I can understand changes over time. |
-| SHARE-1 | Manage Sharing | As a patient, I want to grant or revoke professional access so that I control who can view my records. |
+| AUTH-1 | Account Access | As a user, I want to securely access my account so that my health records remain private. |
+| MET-1 | Record Measurements | As a user, I want to record health measurements so that I can track my health history. |
+| IMP-1 | Import Measurements | As a user, I want to import a CSV file so that I can add existing measurements quickly. |
+| UI-1 | Daily Summary | As a user, I want to see a daily summary so that I can review recent health data. |
+| REP-1 | Historical Trends | As a user, I want to view charts by date range so that I can understand changes over time. |
+| SHARE-1 | Manage Sharing | As a user, I want to grant or revoke professional access so that I control who can view my records. |
 
 ## 6. Ethical considerations
 **Owner: Arvin Gill**
@@ -58,5 +58,5 @@ Some users may have difficulty using complicated layouts or reading certain info
 ## 7. Team blog
 **Owner: Krish Prashar**
 
-🟨 [Enter actual group activities, attendance, and hours in `submission/Group4-Blog.xlsx`.]
+
 
