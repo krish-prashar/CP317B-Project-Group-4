@@ -1,0 +1,51 @@
+timestamp,metric_name,value,unit
+2026-10-27T06:45:00Z,bmi,24.6,kg/m²
+2026-10-27T06:45:00Z,body_fat,18.5,%
+2026-10-27T06:45:00Z,skeletal_muscle_mass,35.2,kg
+2026-10-27T06:45:00Z,visceral_fat_level,8,level
+2026-10-27T06:45:00Z,bmr,1745,kcal
+2026-10-27T06:45:00Z,body_water,57.8,%
+2026-10-27T06:45:00Z,bone_mass,3.2,kg
+2026-10-27T06:45:00Z,protein,17.6,%
+2026-10-27T06:45:00Z,fat_free_weight,63.6,kg
+2026-10-27T06:30:00Z,sleep_stages,"Deep: 1.5, Light: 4.0, REM: 1.2",hours
+2026-10-27T06:30:00Z,resting_heart_rate,58,bpm
+2026-10-27T06:30:00Z,hrv,52,ms
+2026-10-27T06:30:00Z,respiratory_rate,14.2,breaths/min
+2026-10-27T06:30:00Z,skin_temperature,33.8,°C
+2026-10-27T07:15:00Z,gps_coordinates,"40.7812,-73.9665","lat,long"
+2026-10-27T07:15:00Z,heart_rate,152,bpm
+2026-10-27T07:15:00Z,pace,5:32,min/km
+2026-10-27T07:15:00Z,heart_rate_zone,Zone 3,zone
+2026-10-27T07:15:00Z,running_power,245,W
+2026-10-27T07:45:00Z,gps_coordinates,"40.7968,-73.9580","lat,long"
+2026-10-27T07:45:00Z,heart_rate,168,bpm
+2026-10-27T07:45:00Z,pace,5:05,min/km
+2026-10-27T07:45:00Z,heart_rate_zone,Zone 4,zone
+2026-10-27T07:45:00Z,running_power,278,W
+2026-10-27T12:10:00Z,heart_rate,74,bpm
+2026-10-27T12:10:00Z,spo2,98,%
+2026-10-27T12:10:00Z,blood_pressure,118/76,mmHg
+2026-10-27T12:10:00Z,ecg,1.2,mV
+2026-10-27T15:30:00Z,stress_score,42,score
+2026-10-27T23:59:00Z,steps,11842,steps
+2026-10-27T23:59:00Z,calories_burned,2680,kcal
+2026-10-28T06:40:00Z,bmi,24.5,kg/m²
+2026-10-28T06:40:00Z,body_fat,18.3,%
+2026-10-28T06:40:00Z,skeletal_muscle_mass,35.3,kg
+2026-10-28T06:40:00Z,visceral_fat_level,8,level
+2026-10-28T06:40:00Z,fat_free_weight,63.7,kg
+2026-10-28T06:25:00Z,sleep_stages,"Deep: 1.8, Light: 3.6, REM: 1.5",hours
+2026-10-28T06:25:00Z,resting_heart_rate,56,bpm
+2026-10-28T06:25:00Z,hrv,61,ms
+2026-10-28T06:25:00Z,respiratory_rate,13.8,breaths/min
+2026-10-28T06:25:00Z,skin_temperature,33.6,°C
+2026-10-28T09:20:00Z,heart_rate,68,bpm
+2026-10-28T09:20:00Z,spo2,97,%
+2026-10-28T09:20:00Z,blood_pressure,121/79,mmHg
+2026-10-28T09:20:00Z,stress_score,35,score
+2026-10-28T09:20:00Z,ecg,1.1,mV
+2026-10-28T18:05:00Z,stress_score,63,score
+2026-10-28T18:05:00Z,heart_rate,88,bpm
+2026-10-28T23:59:00Z,steps,7415,steps
+2026-10-28T23:59:00Z,calories_burned,2290,kcal
