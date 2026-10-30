@@ -1,5 +1,5 @@
 """
-models.py — SQLAlchemy ORM tables: users and measurements.
+models.py — SQLAlchemy ORM tables: users, measurements, patients and conditions.
 """
 from datetime import datetime, timezone
 
@@ -42,3 +42,40 @@ class Measurement(Base):
 
     # Speeds up the dashboard query: "latest value of each metric for this user".
     __table_args__ = (Index("ix_measurements_user_metric_time", "user_id", "metric", "timestamp"),)
+
+# ---------------------------------------------------------------------------
+# Patient records — fixed fake data, filled in once by seed.py.
+# Viewed by nurses in the health monitor app.
+# ---------------------------------------------------------------------------
+
+class Patient(Base):
+    __tablename__ = "patients"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    first_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
+    sex: Mapped[str] = mapped_column(String(10), nullable=False)
+    phone: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    address: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    blood_type: Mapped[str | None] = mapped_column(String(3), nullable=True)
+    height_cm: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    weight_kg: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    allergies: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    emergency_contact: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    conditions: Mapped[list["Condition"]] = relationship(
+        back_populates="patient", cascade="all, delete-orphan"
+    )
+
+
+class Condition(Base):
+    __tablename__ = "conditions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), nullable=False)
+    name: Mapped[str] = mapped_column(String(150), nullable=False)       # e.g. "Asthma"
+    category: Mapped[str] = mapped_column(String(20), nullable=False)    # Chronic | Illness | Disability
+    notes: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    patient: Mapped["Patient"] = relationship(back_populates="conditions")
