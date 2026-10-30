@@ -40,7 +40,6 @@ class Measurement(Base):
 
     owner: Mapped["User"] = relationship(back_populates="measurements")
 
-    # Speeds up the dashboard query: "latest value of each metric for this user".
     __table_args__ = (Index("ix_measurements_user_metric_time", "user_id", "metric", "timestamp"),)
 
 # ---------------------------------------------------------------------------
