@@ -68,8 +68,9 @@ def parse_timestamp(raw: str) -> datetime:
     except ValueError:
         raise ValueError(f"invalid timestamp '{raw}' (use ISO 8601, e.g. 2026-10-27T06:45:00Z)")
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)  # naive times are treated as UTC
-    return dt
+        return dt.replace(tzinfo=timezone.utc)  # naive times are treated as UTC
+    # SQLite drops the offset when saving, so convert to UTC first.
+    return dt.astimezone(timezone.utc)
 
 
 def normalize_metric(raw: str) -> str:

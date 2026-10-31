@@ -7,10 +7,11 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
+from sqlalchemy import func, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -38,14 +39,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="HealthTrack API", version="0.1.0", lifespan=lifespan)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Vite dev server
+    allow_origins=["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:3000"], # frontend port
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 # ---------- Auth helpers ----------
@@ -135,6 +136,81 @@ def login(payload: schemas.UserLogin, db: Session = Depends(get_db)):
 def read_me(current_user: models.User = Depends(get_current_user)):
     """Handy for checking a token works; the frontend will use it too."""
     return current_user
+
+
+# ---------- Measurements ----------
+@app.get("/measurements", response_model=list[schemas.MeasurementOut], tags=["measurements"])
+def list_measurements(
+    metric: str | None = Query(default=None, description="Only return this metric, e.g. heart_rate"),
+    limit: int = Query(default=500, ge=1, le=5000),
+    offset: int = Query(default=0, ge=0),
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """All of the current user's measurements, newest first (paginated with limit/offset)."""
+    stmt = select(models.Measurement).where(models.Measurement.user_id == current_user.id)
+    if metric:
+        stmt = stmt.where(models.Measurement.metric == metric.strip().lower())
+    stmt = (
+        stmt.order_by(models.Measurement.timestamp.desc(), models.Measurement.id.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+    return db.scalars(stmt).all()
+
+
+@app.get("/measurements/latest", response_model=list[schemas.MeasurementOut], tags=["measurements"])
+def latest_measurements(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Newest reading of each distinct metric — powers the Daily Summary dashboard."""
+    # Number each user's readings per metric, newest = 1 (id breaks timestamp ties).
+    ranked = (
+        select(
+            models.Measurement.id,
+            func.row_number()
+            .over(
+                partition_by=models.Measurement.metric,
+                order_by=(models.Measurement.timestamp.desc(), models.Measurement.id.desc()),
+            )
+            .label("rn"),
+        )
+        .where(models.Measurement.user_id == current_user.id)
+        .subquery()
+    )
+    stmt = (
+        select(models.Measurement)
+        .join(ranked, models.Measurement.id == ranked.c.id)
+        .where(ranked.c.rn == 1)
+        .order_by(models.Measurement.metric)
+    )
+    return db.scalars(stmt).all()
+
+
+@app.post(
+    "/measurements",
+    response_model=schemas.MeasurementOut,
+    status_code=status.HTTP_201_CREATED,
+    tags=["measurements"],
+)
+def create_measurement(
+    payload: schemas.MeasurementCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Manually add one measurement (JSON body)."""
+    measurement = models.Measurement(
+        user_id=current_user.id,
+        metric=payload.metric,
+        value=payload.value,
+        unit=payload.unit,
+        timestamp=payload.timestamp or datetime.now(timezone.utc),
+    )
+    db.add(measurement)
+    db.commit()
+    db.refresh(measurement)
+    return measurement
 
 
 @app.post(

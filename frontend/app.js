@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------
    HealthTrack Sprint 1 front end (AUTH-1, MET-1, IMP-1, UI-1)
-   Talks to the FastAPI backend (register, login, CSV import). Change API_URL if the server runs elsewhere.
+   Talks to the FastAPI backend (register, login, measurements, CSV import). Change API_URL if the server runs elsewhere.
 ------------------------------------------------------------------- */
 const API_URL = "http://127.0.0.1:8000";
 
@@ -105,38 +105,11 @@ $("logout").onclick = () => endSession();
 setInterval(() => { if (user && Date.now() - lastActive > IDLE_MS) endSession("You were logged out after 15 minutes of inactivity."); }, 15000);
 
 /* ---------- data ---------- */
-// The backend has no "list measurements" route yet, so Summary and History show the readings
-// this browser has sent. Once a GET /measurements route exists, make loadData do:
-//   cache = await api("/measurements"); return cache;
-const localKey = () => "ht_local_" + user;
-async function loadData() { cache = read(localKey(), []); return cache; }
-const remember = rows => write(localKey(), read(localKey(), []).concat(rows));
-const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-// A single reading is sent as a one-row CSV through the existing import route.
-function sendCsv(csvText) {
-  const form = new FormData();
-  form.append("file", new File([csvText], "healthtrack.csv", {type: "text/csv"}));
-  return api("/measurements/import", {method: "POST", form});
-}
-// Rebuild the plain-number rows of an imported file so they can be shown in the UI.
-function mirrorRows(text, bad) {
-  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
-  const cols = lines[0].split(",").map(h => h.trim().toLowerCase());
-  const pick = names => cols.findIndex(c => names.includes(c));
-  const it = pick(["timestamp", "date", "datetime", "time"]), im = pick(["metric", "metric_name", "name"]),
-        iv = pick(["value"]), iu = pick(["unit", "units"]);
-  const rows = [];
-  lines.slice(1).forEach((line, i) => {
-    if (!line.trim() || bad.has(i + 2)) return;
-    const p = line.split(",").map(x => x.trim().replace(/^"|"$/g, ""));
-    const ts = (p[it] || "").replace(" ", "T").replace(/[zZ]$/, "+00:00");
-    const t = new Date(/[+-]\d\d:?\d\d$/.test(ts) ? ts : ts + "Z");
-    const v = Number(p[iv]), metric = (p[im] || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
-    if (isNaN(t) || !p[iv] || !Number.isFinite(v) || !metric || !p[iu]) return;
-    rows.push({id: newId(), metric, value: v, unit: p[iu], timestamp: t.toISOString()});
-  });
-  return rows;
-}
+// All measurements come from the backend (newest first). Nothing health-related is kept in the browser.
+async function loadData() { cache = await api("/measurements"); return cache; }
+// Clean up readings that older versions of this page copied into localStorage.
+try { Object.keys(localStorage).filter(k => k.startsWith("ht_local_")).forEach(k => localStorage.removeItem(k)); } catch {}
+// Only the dashboard's metric-picker choice (not health data) is still saved in the browser.
 const getPrefs = () => read("ht_prefs_" + user, Object.keys(METRICS));
 function toast(text) {
   $("toast").innerHTML = `<div class="msg ok">${esc(text)}</div>`;
@@ -206,9 +179,7 @@ $("add-form").onsubmit = async e => {
   }
   const row = {metric: $("m-metric").value, value: n, unit: $("m-unit").value, timestamp: new Date($("m-date").value).toISOString()};
   try {
-    const r = await sendCsv(`timestamp,metric,value,unit\n${row.timestamp},${row.metric},${row.value},${row.unit}\n`);
-    if (r.rows_imported !== 1) { $("add-msg").innerHTML = `<div class="msg err">${esc(r.errors[0]?.error || "The server did not accept this measurement.")}</div>`; return; }
-    remember([{id: newId(), ...row}]);
+    await api("/measurements", {method: "POST", json: row});
     toast("Measurement saved.");
     go("history");
   } catch (err) { showErr($("add-msg"), err); }
@@ -236,9 +207,7 @@ $("do-import").onclick = async () => {
   const form = new FormData(); form.append("file", f);
   $("do-import").disabled = true;
   try {
-    const text = await f.text();
     const r = await api("/measurements/import", {method: "POST", form});
-    if (r.rows_imported) remember(mirrorRows(text, new Set(r.errors.map(e => e.line))));
     let html = r.rows_imported ? `<div class="msg ok"><strong>${r.rows_imported} row${r.rows_imported === 1 ? "" : "s"} imported</strong> (${r.measurements_created} measurement${r.measurements_created === 1 ? "" : "s"} saved).</div>` : "";
     if (r.rows_failed) html += `<div class="msg err"><strong>${r.rows_failed} row${r.rows_failed === 1 ? "" : "s"} skipped${r.rows_failed > r.errors.length ? " (showing the first " + r.errors.length + ")" : ""}:</strong><ul>${r.errors.map(b => `<li>Line ${b.line}: ${esc(b.error)}</li>`).join("")}</ul></div>`;
     if (!r.rows_imported && !r.rows_failed) html = `<div class="msg warn">The file has no data rows.</div>`;
@@ -249,6 +218,7 @@ $("do-import").onclick = async () => {
 
 /* ---------- boot: restore session unless idle too long ---------- */
 (() => {
-  const s = JSON.parse(sessionStorage.getItem("ht_session") || "null");
+  let s = null;
+  try { s = JSON.parse(sessionStorage.getItem("ht_session") || "null"); } catch {}
   if (s && Date.now() - s.t < IDLE_MS) startSession(s.token, s.email);
 })();

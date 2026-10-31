@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTrack</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; color: #333; }
+        .hidden { display: none !important; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto 20px; }
+        .msg { padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .err { background: #fee2e2; color: #991b1b; }
+        .ok { background: #dcfce7; color: #166534; }
+        .warn { background: #fef3c7; color: #92400e; }
+        input, select, button { display: block; width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #2563eb; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1d4ed8; }
+        nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        nav button { width: auto; background: #e5e7eb; color: #333; }
+        nav button[aria-current="page"] { background: #2563eb; color: white; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .metric { background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+        .metric .val { font-size: 24px; font-weight: bold; color: #1e293b; margin: 10px 0; }
+        .metric .when { font-size: 12px; color: #64748b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tabs button { flex: 1; background: #e5e7eb; color: #333; }
+        .tabs button[aria-selected="true"] { background: #2563eb; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- AUTHENTICATION VIEW -->
+    <div id="auth" class="card">
+        <h1>HealthTrack</h1>
+        <div class="tabs">
+            <button id="tab-login" type="button" aria-selected="true">Log in</button>
+            <button id="tab-register" type="button" aria-selected="false">Register</button>
+        </div>
+        <div id="auth-msg"></div>
+        <form id="auth-form">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <p id="pw-hint" class="hidden" style="font-size:12px; color:#666; margin-top:-5px;">Min 8 chars, at least 1 letter & 1 number</p>
+            <div id="confirm-field" class="hidden">
+                <input type="password" id="confirm" placeholder="Confirm Password">
+            </div>
+            <button type="submit" id="auth-submit">Log in</button>
+        </form>
+    </div>
+
+    <!-- MAIN APP VIEW -->
+    <div id="app" class="hidden">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2>Welcome, <span id="who"></span></h2>
+                <button id="logout" style="width:auto; background:#dc2626;">Log out</button>
+            </div>
+
+            <nav>
+                <button data-view="summary">Daily Summary</button>
+                <button data-view="add">Add Measurement</button>
+                <button data-view="import">Import CSV</button>
+                <button data-view="history">History</button>
+            </nav>
+
+            <!-- Summary -->
+            <div id="view-summary" class="card">
+                <h3>Daily Summary</h3>
+                <div id="metric-picker" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px; font-size:14px;"></div>
+                <div id="summary-grid" class="summary-grid"></div>
+            </div>
+
+            <!-- Add Measurement -->
+            <div id="view-add" class="card hidden">
+                <h3>Add Measurement</h3>
+                <div id="add-msg"></div>
+                <form id="add-form">
+                    <select id="m-metric"></select>
+                    <input type="number" step="any" id="m-value" placeholder="Value" required>
+                    <select id="m-unit"></select>
+                    <input type="datetime-local" id="m-date" required>
+                    <button type="submit">Save Measurement</button>
+                </form>
+            </div>
+
+            <!-- Import CSV -->
+            <div id="view-import" class="card hidden">
+                <h3>Import CSV</h3>
+                <p>Upload a CSV with columns: <code>timestamp, metric, value, unit</code></p>
+                <button id="sample" style="background:#64748b; margin-bottom:10px;">Download Sample CSV</button>
+                <input type="file" id="csv-file" accept=".csv">
+                <button id="do-import">Upload</button>
+                <div id="import-result" style="margin-top:15px;"></div>
+            </div>
+
+            <!-- History -->
+            <div id="view-history" class="card hidden">
+                <h3>History</h3>
+                <div id="history"></div>
+            </div>
+            
+            <div id="toast" style="position:fixed; bottom:20px; right:20px; z-index:1000;"></div>
+        </div>
+    </div>
+
+
+    <script src="app.js"></script> 
+</body>
+</html>
