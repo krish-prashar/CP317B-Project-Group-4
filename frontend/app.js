@@ -196,24 +196,36 @@ async function renderHistory() {
 }
 
 /* ---------- IMP-1: CSV import ---------- */
-$("sample").onclick = () => {
-  const csv = "timestamp,metric,value,unit\n2026-10-01T08:00:00Z,weight,72.4,kg\n2026-10-01T08:05:00Z,heart_rate,64,bpm\n2026-10-02T08:00:00Z,bmi,22.8,kg/m²\n2026-10-03T08:00:00Z,body_fat,18.5,%\n";
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"})); a.download = "healthtrack-sample.csv"; a.click();
-};
-$("do-import").onclick = async () => {
-  const out = $("import-result"), f = $("csv-file").files[0];
-  if (!f) { out.innerHTML = `<div class="msg err">Choose a CSV file first.</div>`; return; }
-  const form = new FormData(); form.append("file", f);
-  $("do-import").disabled = true;
+function deviceReadings() {
+  const ago = min => new Date(Date.now() - min * 60000).toISOString();
+  return [
+    {metric: "weight",     value: 78.4, unit: "kg",    timestamp: ago(45)},  // smart scale
+    {metric: "bmi",        value: 24.7, unit: "kg/m²", timestamp: ago(45)},  // smart scale
+    {metric: "body_fat",   value: 18.6, unit: "%",     timestamp: ago(45)},  // smart scale
+    {metric: "heart_rate", value: 66,   unit: "bpm",   timestamp: ago(5)}    // watch
+  ];
+}
+const SYNC_LABEL = "Sync with Smart Scale/Watch";
+// Replaces the old CSV upload markup inside #view-import, so the HTML file needs no changes.
+$("view-import").innerHTML = `
+  <div class="card">
+    <h2>Sync your devices</h2>
+    <p class="hint">Pull the latest readings from your smart scale and watch.</p>
+    <button class="btn" id="do-sync" type="button" aria-label="Sync latest readings from smart scale and watch">${SYNC_LABEL}</button>
+    <div id="sync-result" role="status" aria-live="polite"></div>
+  </div>`;
+const syncNav = document.querySelector('nav button[data-view="import"]');
+if (syncNav) syncNav.textContent = "Sync device";
+
+$("do-sync").onclick = async () => {
+  const btn = $("do-sync"), out = $("sync-result");
+  btn.disabled = true; btn.textContent = "Syncing…"; out.innerHTML = "";
   try {
-    const r = await api("/measurements/import", {method: "POST", form});
-    let html = r.rows_imported ? `<div class="msg ok"><strong>${r.rows_imported} row${r.rows_imported === 1 ? "" : "s"} imported</strong> (${r.measurements_created} measurement${r.measurements_created === 1 ? "" : "s"} saved).</div>` : "";
-    if (r.rows_failed) html += `<div class="msg err"><strong>${r.rows_failed} row${r.rows_failed === 1 ? "" : "s"} skipped${r.rows_failed > r.errors.length ? " (showing the first " + r.errors.length + ")" : ""}:</strong><ul>${r.errors.map(b => `<li>Line ${b.line}: ${esc(b.error)}</li>`).join("")}</ul></div>`;
-    if (!r.rows_imported && !r.rows_failed) html = `<div class="msg warn">The file has no data rows.</div>`;
-    out.innerHTML = html;
+    const r = await api("/measurements/bulk", {method: "POST", json: deviceReadings()});
+    out.innerHTML = `<div class="msg ok"><strong>Synced ${r.synced} reading${r.synced === 1 ? "" : "s"}</strong> from your smart scale and watch. <a href="#" id="sync-view">View dashboard</a></div>`;
+    $("sync-view").onclick = e => { e.preventDefault(); go("summary"); };
   } catch (err) { showErr(out, err); }
-  finally { $("do-import").disabled = false; }
+  finally { btn.disabled = false; btn.textContent = SYNC_LABEL; }
 };
 
 /* ---------- boot: restore session unless idle too long ---------- */
