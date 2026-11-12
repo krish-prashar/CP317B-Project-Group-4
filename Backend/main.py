@@ -214,54 +214,50 @@ def create_measurement(
 
 
 @app.post(
-    "/measurements/import",
-    response_model=schemas.ImportSummary,
+    "/measurements/sync-device",
+    response_model=schemas.SyncSummary,
     status_code=status.HTTP_201_CREATED,
     tags=["measurements"],
 )
-def import_measurements(
-    file: UploadFile = File(..., description="CSV with columns: timestamp, metric, value, unit"),
+def sync_device(
+    readings: list[schemas.MeasurementCreate] = Body(
+        ...,
+        min_length=1,
+        max_length=MAX_SYNC_READINGS,
+        description="JSON array of readings pushed by a smart scale / watch",
+    ),
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Bulk-import measurements from a CSV. Bad rows are skipped and reported, not fatal."""
-    if file.filename and not file.filename.lower().endswith(".csv"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Please upload a .csv file")
+    """Simulated IoT device sync: save a batch of readings for the logged-in user.
 
-    raw = file.file.read(MAX_UPLOAD_BYTES + 1)
-    if len(raw) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="CSV must be 5 MB or smaller")
-
-    try:
-        text = raw.decode("utf-8-sig")  # "-sig" strips the BOM Excel adds
-    except UnicodeDecodeError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CSV must be UTF-8 encoded")
+    Every reading is validated by MeasurementCreate before this runs, so a single bad
+    reading rejects the whole batch with 422 and nothing is saved.
+    """
+    now = datetime.now(timezone.utc)
+    saved: list[models.Measurement] = []
 
     try:
-        result = parse_measurements_csv(text)
-    except CSVFormatError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
-
-    try:
-        db.add_all(
-            models.Measurement(
+        for reading in readings:
+            measurement = models.Measurement(
                 user_id=current_user.id,
-                metric=m.metric,
-                value=m.value,
-                unit=m.unit,
-                timestamp=m.timestamp,
+                metric=reading.metric,
+                value=reading.value,
+                unit=reading.unit,
+                timestamp=reading.timestamp or now,
             )
-            for m in result.measurements
-        )
-        db.commit()  # one transaction: all valid rows are saved together
+            db.add(measurement)
+            saved.append(measurement)
+        db.commit()  # one transaction: the whole batch is saved, or none of it
     except SQLAlchemyError:
         db.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not save measurements")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not save readings")
 
-    return schemas.ImportSummary(
-        filename=file.filename,
-        rows_imported=result.rows_imported,
-        rows_failed=result.rows_failed,
-        measurements_created=len(result.measurements),
-        errors=result.errors,
+    for measurement in saved:
+        db.refresh(measurement)
+
+    return schemas.SyncSummary(
+        synced=len(saved),
+        metrics=sorted({m.metric for m in saved}),
+        measurements=saved,
     )

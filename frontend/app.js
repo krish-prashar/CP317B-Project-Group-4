@@ -226,7 +226,7 @@ $("do-sync").onclick = async () => {
     $("sync-view").onclick = e => { e.preventDefault(); go("summary"); };
   } catch (err) { showErr(out, err); }
   finally { btn.disabled = false; btn.textContent = SYNC_LABEL; }
-};
+};~
 
 /* ---------- boot: restore session unless idle too long ---------- */
 (() => {

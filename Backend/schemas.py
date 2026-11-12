@@ -119,3 +119,8 @@ class ImportSummary(BaseModel):
     rows_failed: int
     measurements_created: int
     errors: list[ImportRowError]  # first 20 failed rows, so the UI can show what went wrong
+
+class SyncSummary(BaseModel):
+    synced: int                         # how many readings were saved
+    metrics: list[str]                  # distinct metrics in this sync, e.g. ["bmi", "heart_rate"]
+    measurements: list[MeasurementOut]  # the saved rows (with ids), newest data for the UI
