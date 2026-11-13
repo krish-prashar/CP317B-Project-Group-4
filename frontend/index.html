@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthTrack</title>
+    <title>Health Monitoring System</title>
     <style>
         body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; color: #333; }
+        /* Brand mark: always top-left so staff can tell at a glance they are on the right system. */
+        .brand { display: flex; align-items: center; gap: 8px; margin: -6px 0 18px; font-size: 14px; font-weight: 700; letter-spacing: 0.02em; color: #1e3a8a; text-transform: uppercase; }
+        .brand .logo { width: 22px; height: 22px; border-radius: 6px; background: #2563eb; color: white; display: grid; place-items: center; font-size: 16px; line-height: 1; }
+        .brand small { font-weight: 500; text-transform: none; letter-spacing: 0; color: #64748b; }
+        .auth-card h1 { margin: 0 0 4px; font-size: 22px; }
+        .auth-card .subtitle { margin: 0 0 16px; }
+        .field-label { display: block; font-size: 13px; color: #475569; margin-bottom: 4px; }
         .hidden { display: none !important; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto 20px; }
         .msg { padding: 10px; border-radius: 4px; margin-bottom: 15px; }
@@ -27,26 +34,65 @@
         .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
         .tabs button { flex: 1; background: #e5e7eb; color: #333; }
         .tabs button[aria-selected="true"] { background: #2563eb; color: white; }
+        /* Sprint 2: validation flags + trends */
+        .flag { color: #b45309; font-weight: bold; }
+        tr.flagged td { background: #fffbeb; }
+        .metric.flagged { border-color: #f59e0b; }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+        .row > label { flex: 1; min-width: 140px; font-size: 13px; color: #475569; }
+        .row > label > * { margin-top: 4px; }
+        .inline { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+        .inline input { display: inline; width: auto; margin: 0; }
+        .btn-row { display: flex; gap: 10px; }
+        .btn-row button { width: auto; }
+        .btn-secondary { background: #64748b; }
+        .chart svg { width: 100%; height: auto; display: block; }
+        .chart .axis { stroke: #94a3b8; }
+        .chart .grid { stroke: #e2e8f0; }
+        .chart .tick { font-size: 11px; fill: #64748b; }
+        .chart .axis-label { font-size: 12px; fill: #334155; }
+        .chart .band { fill: #dcfce7; }
+        .chart .line { fill: none; stroke: #2563eb; stroke-width: 2; }
+        .chart .pt { fill: #2563eb; }
+        .chart .pt.flagged { fill: #d97706; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 8px; margin-top: 15px; }
+        .stats div { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; font-size: 13px; color: #64748b; }
+        .stats strong { display: block; font-size: 16px; white-space: nowrap; color: #1e293b; }
+        .hint { font-size: 13px; color: #64748b; }
     </style>
 </head>
 <body>
 
-    <!-- AUTHENTICATION VIEW -->
-    <div id="auth" class="card">
-        <h1>HealthTrack</h1>
+    <!-- Brand mark (top-left on every screen) -->
+    <header class="brand" aria-label="Health Monitoring System">
+        <span class="logo" aria-hidden="true">+</span>
+        <span>Health Monitoring System</span>
+        <small>&middot; HealthTrack</small>
+    </header>
+
+    <!-- AUTHENTICATION VIEW (staff only: clinics, hospitals and care teams) -->
+    <div id="auth" class="card auth-card">
+        <h1>Staff sign in</h1>
+        <p class="subtitle hint">Access is limited to authorised staff. Use the work email or work ID issued by your organisation.</p>
         <div class="tabs">
-            <button id="tab-login" type="button" aria-selected="true">Log in</button>
-            <button id="tab-register" type="button" aria-selected="false">Register</button>
+            <button id="tab-login" type="button" aria-selected="true">Sign in</button>
+            <button id="tab-register" type="button" aria-selected="false">Create staff account</button>
         </div>
         <div id="auth-msg"></div>
         <form id="auth-form">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
+            <label class="field-label" for="identifier" id="identifier-label">Work email or work ID</label>
+            <input type="text" id="identifier" placeholder="e.g. j.smith@stmarys.ca or RN-10432" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+            <div id="work-id-field" class="hidden">
+                <label class="field-label" for="work_id">Work ID</label>
+                <input type="text" id="work_id" placeholder="Staff / employee ID, e.g. RN-10432" autocomplete="off" autocapitalize="characters" spellcheck="false">
+            </div>
+            <label class="field-label" for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
             <p id="pw-hint" class="hidden" style="font-size:12px; color:#666; margin-top:-5px;">Min 8 chars, at least 1 letter & 1 number</p>
             <div id="confirm-field" class="hidden">
-                <input type="password" id="confirm" placeholder="Confirm Password">
+                <input type="password" id="confirm" placeholder="Confirm Password" autocomplete="new-password">
             </div>
-            <button type="submit" id="auth-submit">Log in</button>
+            <button type="submit" id="auth-submit">Sign in</button>
         </form>
     </div>
 
@@ -55,7 +101,7 @@
         <div style="max-width: 800px; margin: 0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <h2>Welcome, <span id="who"></span></h2>
-                <button id="logout" style="width:auto; background:#dc2626;">Log out</button>
+                <button id="logout" style="width:auto; background:#dc2626;">Sign out</button>
             </div>
 
             <nav>
@@ -63,6 +109,7 @@
                 <button data-view="add">Add Measurement</button>
                 <button data-view="import">Import CSV</button>
                 <button data-view="history">History</button>
+                <button data-view="trends">Trends</button>
             </nav>
 
             <!-- Summary -->
@@ -75,11 +122,12 @@
             <!-- Add Measurement -->
             <div id="view-add" class="card hidden">
                 <h3>Add Measurement</h3>
-                <div id="add-msg"></div>
+                <div id="add-msg" role="alert"></div>
                 <form id="add-form">
                     <select id="m-metric"></select>
                     <input type="number" step="any" id="m-value" placeholder="Value" required>
                     <select id="m-unit"></select>
+                    <p id="m-range" class="hint" style="margin-top:-5px;"></p>
                     <input type="datetime-local" id="m-date" required>
                     <button type="submit">Save Measurement</button>
                 </form>
@@ -98,7 +146,33 @@
             <!-- History -->
             <div id="view-history" class="card hidden">
                 <h3>History</h3>
+                <label class="inline"><input type="checkbox" id="h-flagged"> Show flagged readings only</label>
                 <div id="history"></div>
+            </div>
+
+            <!-- Historical Trends -->
+            <div id="view-trends" class="card hidden">
+                <h3>Historical Trends</h3>
+                <div class="row">
+                    <label>Metric <select id="t-metric"></select></label>
+                    <label>Date range
+                        <select id="t-range">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="365">Last 12 months</option>
+                            <option value="custom">Custom…</option>
+                        </select>
+                    </label>
+                    <label id="t-unit-field" class="hidden">Unit <select id="t-unit"></select></label>
+                </div>
+                <div id="t-custom" class="row hidden">
+                    <label>From <input type="date" id="t-from"></label>
+                    <label>To <input type="date" id="t-to"></label>
+                </div>
+                <div id="t-msg"></div>
+                <div id="t-chart" class="chart" role="img" aria-live="polite"></div>
+                <div id="t-stats" class="stats"></div>
             </div>
             
             <div id="toast" style="position:fixed; bottom:20px; right:20px; z-index:1000;"></div>

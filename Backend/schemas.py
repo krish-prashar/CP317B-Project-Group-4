@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 # Flexible metric names (weight, bmi, body_fat, heart_rate, hrv, blood_pressure_systolic, ...).
 # Lowercase snake_case, max 32 chars to match models.Measurement.metric.
@@ -23,10 +23,28 @@ def to_utc(dt: datetime) -> datetime:
 
 
 # ---------- Auth ----------
+# Staff / employee IDs: letters, digits and dashes, e.g. "RN-10432" or "EMP004821".
+# Compared case-insensitively (stored upper-case).
+WORK_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{2,31}$")
+
+
+def normalize_work_id(v: str) -> str:
+    v = v.strip().upper()
+    if not WORK_ID_PATTERN.match(v):
+        raise ValueError("Work ID must be 3-32 letters, digits or dashes")
+    return v
+
+
 class UserCreate(BaseModel):
-    email: EmailStr
+    email: EmailStr  # work email
+    work_id: str
     password: str = Field(min_length=8, max_length=72)  # bcrypt only uses the first 72 bytes
     full_name: str | None = Field(default=None, max_length=120)
+
+    @field_validator("work_id")
+    @classmethod
+    def valid_work_id(cls, v: str) -> str:
+        return normalize_work_id(v)
 
     @field_validator("password")
     @classmethod
@@ -37,8 +55,15 @@ class UserCreate(BaseModel):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    """Sign in with either the work email or the work ID. `email` is still accepted
+    as the field name so older clients keep working."""
+    identifier: str = Field(min_length=1, max_length=255,
+                            validation_alias=AliasChoices("identifier", "email", "work_id"))
     password: str
+
+    @property
+    def is_email(self) -> bool:
+        return "@" in self.identifier
 
 
 class UserOut(BaseModel):
@@ -46,6 +71,7 @@ class UserOut(BaseModel):
 
     id: int
     email: EmailStr
+    work_id: str | None
     full_name: str | None
     created_at: datetime
 
@@ -100,6 +126,7 @@ class MeasurementOut(BaseModel):
     value: float
     unit: str
     timestamp: datetime
+    flag_reason: str | None = None  # set when the value is outside the normal range
 
     @field_validator("timestamp")
     @classmethod
@@ -124,3 +151,4 @@ class SyncSummary(BaseModel):
     synced: int                         # how many readings were saved
     metrics: list[str]                  # distinct metrics in this sync, e.g. ["bmi", "heart_rate"]
     measurements: list[MeasurementOut]  # the saved rows (with ids), newest data for the UI
+    flagged: int = 0                    # how many of them are outside the normal range
