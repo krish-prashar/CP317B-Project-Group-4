@@ -24,7 +24,7 @@ pip install -r requirements-dev.txt
 python -m pytest
 ```
 
-## Sprint 3
+## Sprint 2
 **Staff sign-in:** the system is for clinic and hospital staff, not the public.
 - Staff sign in with the **work email or work ID** issued by their organisation (`POST /login` takes `identifier` + `password`; the old `email` field still works).
 - Creating an account needs a work email, a work ID (3-32 letters, digits or dashes, e.g. `RN-10432`) and a password. Work IDs are unique and case-insensitive.
@@ -32,7 +32,6 @@ python -m pytest
 - Every screen shows the **Health Monitoring System** mark at the top left so staff can tell they are on the right system.
 - An existing `healthtrack.db` is upgraded on startup (it adds the `work_id` column). Accounts created before this change have no work ID yet and sign in with their email.
 
-## Sprint 2
 **Data validation:** every reading is checked against `Backend/validation.py`.
 - Impossible values or a wrong unit (e.g. heart rate 900 bpm, weight in bpm) are rejected and not saved.
 - Values outside the normal range are saved and flagged. The Add Measurement form asks the user to confirm first. Flags appear in History (with a "flagged only" filter), on the Daily Summary and on the trend charts.
