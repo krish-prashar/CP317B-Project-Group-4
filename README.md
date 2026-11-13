@@ -11,10 +11,11 @@ cd Backend
 pip install -r requirements.txt
 uvicorn main:app --reload            # API on http://127.0.0.1:8000 (docs at /docs)
 ```
-In a second terminal, serve the front end:
+In a second terminal, start the React front end (needs Node.js 20.19+ or 22+):
 ```bash
 cd frontend
-python -m http.server 5500           # open http://localhost:5500
+npm install                          # first time only
+npm run dev                          # open http://localhost:5500
 ```
 
 ## Running the tests
@@ -22,6 +23,9 @@ python -m http.server 5500           # open http://localhost:5500
 cd Backend
 pip install -r requirements-dev.txt
 python -m pytest
+
+cd ../frontend
+npm test                             # frontend unit + component tests
 ```
 
 ## Sprint 2
@@ -44,3 +48,19 @@ python -m pytest
 - `GET /measurements` now accepts `start`, `end` and `flagged` query parameters.
 
 **Sprint 1 fixes:** the backend didn't start (missing `Body` import and `MAX_SYNC_READINGS`), and the device sync button called an endpoint that doesn't exist (`/measurements/bulk` → `/measurements/sync-device`).
+
+## React front end
+The front end is a React app built with Vite (`frontend/`). The backend is unchanged.
+
+```
+frontend/src/
+  App.jsx              sign-in state, navigation, idle sign-out
+  pages/               one component per screen: SignIn, Summary, AddMeasurement,
+                       DeviceSync, History, Trends
+  components/          Brand mark, LineChart (SVG), message boxes
+  hooks/               useMeasurements (data loading), useRules, useIdleTimeout
+  lib/                 api client, validation checks, chart and date helpers
+```
+- The dev server runs on port 5500 because that's one of the origins the backend's CORS settings allow.
+- Set `VITE_API_URL` in `frontend/.env` if the API isn't on `http://127.0.0.1:8000`.
+- `npm run build` writes a static build to `frontend/dist/`.

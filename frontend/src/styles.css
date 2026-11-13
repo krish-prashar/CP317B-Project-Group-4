@@ -1,0 +1,63 @@
+body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; color: #333; }
+/* Brand mark: always top-left so staff can tell at a glance they are on the right system. */
+.brand { display: flex; align-items: center; gap: 8px; margin: -6px 0 18px; font-size: 14px; font-weight: 700; letter-spacing: 0.02em; color: #1e3a8a; text-transform: uppercase; }
+.brand .logo { width: 22px; height: 22px; border-radius: 6px; background: #2563eb; color: white; display: grid; place-items: center; font-size: 16px; line-height: 1; }
+.brand small { font-weight: 500; text-transform: none; letter-spacing: 0; color: #64748b; }
+.auth-card h1 { margin: 0 0 4px; font-size: 22px; }
+.auth-card .subtitle { margin: 0 0 16px; }
+.field-label { display: block; font-size: 13px; color: #475569; margin-bottom: 4px; }
+.hidden { display: none !important; }
+.card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto 20px; }
+.msg { padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+.err { background: #fee2e2; color: #991b1b; }
+.ok { background: #dcfce7; color: #166534; }
+.warn { background: #fef3c7; color: #92400e; }
+input, select, button { display: block; width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+button { background: #2563eb; color: white; border: none; cursor: pointer; font-weight: bold; }
+button:hover { background: #1d4ed8; }
+nav { display: flex; gap: 10px; margin-bottom: 20px; }
+nav button { width: auto; background: #e5e7eb; color: #333; }
+nav button[aria-current="page"] { background: #2563eb; color: white; }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+.metric { background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+.metric .val { font-size: 24px; font-weight: bold; color: #1e293b; margin: 10px 0; }
+.metric .when { font-size: 12px; color: #64748b; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+.tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+.tabs button { flex: 1; background: #e5e7eb; color: #333; }
+.tabs button[aria-selected="true"] { background: #2563eb; color: white; }
+/* Sprint 2: validation flags + trends */
+.flag { color: #b45309; font-weight: bold; }
+tr.flagged td { background: #fffbeb; }
+.metric.flagged { border-color: #f59e0b; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.row > label { flex: 1; min-width: 140px; font-size: 13px; color: #475569; }
+.row > label > * { margin-top: 4px; }
+.inline { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.inline input { display: inline; width: auto; margin: 0; }
+.btn-row { display: flex; gap: 10px; }
+.btn-row button { width: auto; }
+.btn-secondary { background: #64748b; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .axis { stroke: #94a3b8; }
+.chart .grid { stroke: #e2e8f0; }
+.chart .tick { font-size: 11px; fill: #64748b; }
+.chart .axis-label { font-size: 12px; fill: #334155; }
+.chart .band { fill: #dcfce7; }
+.chart .line { fill: none; stroke: #2563eb; stroke-width: 2; }
+.chart .pt { fill: #2563eb; }
+.chart .pt.flagged { fill: #d97706; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 8px; margin-top: 15px; }
+.stats div { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; font-size: 13px; color: #64748b; }
+.stats strong { display: block; font-size: 16px; white-space: nowrap; color: #1e293b; }
+.hint { font-size: 13px; color: #64748b; }
+/* React version additions */
+.app { max-width: 800px; margin: 0 auto; }
+.app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-danger { width: auto; background: #dc2626; }
+.btn-danger:hover { background: #b91c1c; }
+.metric-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; font-size: 14px; }
+.toast { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+.link-button { display: inline; width: auto; padding: 0; margin: 0; background: none; border: none; color: #2563eb; font-weight: normal; text-decoration: underline; cursor: pointer; }
+.link-button:hover { background: none; color: #1d4ed8; }
