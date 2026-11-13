@@ -234,3 +234,4 @@ $("do-sync").onclick = async () => {
   try { s = JSON.parse(sessionStorage.getItem("ht_session") || "null"); } catch {}
   if (s && Date.now() - s.t < IDLE_MS) startSession(s.token, s.email);
 })();
+<script src="trends.js" defer></script>
