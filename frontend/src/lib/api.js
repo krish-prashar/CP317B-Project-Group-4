@@ -1,6 +1,7 @@
 // Small wrapper around fetch for the FastAPI backend.
-// Set VITE_API_URL in frontend/.env if the backend runs somewhere else.
-export const API_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+// Default: the online backend on Render. To use a local backend instead, create
+// frontend/.env with the line  VITE_API_URL=http://127.0.0.1:8000  and restart `npm run dev`.
+export const API_URL = import.meta.env.VITE_API_URL ?? "https://healthtrack-ts18.onrender.com";
 
 export class ApiError extends Error {
   constructor(message, status) {
